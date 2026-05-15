@@ -6,7 +6,7 @@ package modelid
 import (
 	"sync"
 
-	tea "github.com/charmbracelet/bubbletea"
+	tea "charm.land/bubbletea/v2"
 )
 
 // ID is a unique identifier for a model

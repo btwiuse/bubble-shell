@@ -4,8 +4,8 @@ import (
 	"strings"
 
 	"github.com/DomBlack/bubble-shell/pkg/tui/history"
-	"github.com/charmbracelet/bubbles/key"
-	tea "github.com/charmbracelet/bubbletea"
+	"charm.land/bubbles/v2/key"
+	tea "charm.land/bubbletea/v2"
 )
 
 type CommandEntryMode struct{ KeepInputContent bool }
@@ -20,9 +20,9 @@ func (c *CommandEntryMode) Enter(m Model) (Model, tea.Cmd) {
 	m.lookBackPartial = ""
 	m.input.Prompt = m.cfg.PromptFunc()
 	m.input.CursorEnd()
-	m.input.Focus()
+	cmd := m.input.Focus()
 
-	return m, nil
+	return m, cmd
 }
 
 func (c *CommandEntryMode) Leave(m Model) (Model, tea.Cmd) {
@@ -40,7 +40,7 @@ func (c *CommandEntryMode) Update(m Model, msg tea.Msg) (Model, tea.Cmd) {
 		m.height = msg.Height
 		m.width = msg.Width
 
-		m.input.Width = m.width
+		m.input.SetWidth(m.width)
 
 		m.history, cmd = m.history.Update(tea.WindowSizeMsg{
 			Width:  msg.Width,
@@ -53,7 +53,7 @@ func (c *CommandEntryMode) Update(m Model, msg tea.Msg) (Model, tea.Cmd) {
 
 		return m, tea.Batch(cmds...)
 
-	case tea.KeyMsg:
+	case tea.KeyPressMsg:
 		switch {
 		case key.Matches(msg, m.cfg.KeyMap.ExecuteCommand):
 			line := strings.TrimSpace(m.input.Value())

@@ -10,7 +10,7 @@ import (
 	"unicode/utf8"
 
 	. "github.com/DomBlack/bubble-shell/pkg/modelid"
-	tea "github.com/charmbracelet/bubbletea"
+	tea "charm.land/bubbletea/v2"
 	"github.com/cockroachdb/errors"
 )
 

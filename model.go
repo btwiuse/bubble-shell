@@ -14,11 +14,11 @@ import (
 	"github.com/DomBlack/bubble-shell/pkg/modelid"
 	"github.com/DomBlack/bubble-shell/pkg/tui/autocomplete"
 	"github.com/DomBlack/bubble-shell/pkg/tui/history"
-	"github.com/charmbracelet/bubbles/help"
-	"github.com/charmbracelet/bubbles/key"
-	"github.com/charmbracelet/bubbles/textinput"
-	tea "github.com/charmbracelet/bubbletea"
-	"github.com/charmbracelet/lipgloss"
+	"charm.land/bubbles/v2/help"
+	"charm.land/bubbles/v2/key"
+	"charm.land/bubbles/v2/textinput"
+	tea "charm.land/bubbletea/v2"
+	"charm.land/lipgloss/v2"
 	"github.com/spf13/cobra"
 )
 
@@ -64,17 +64,26 @@ func New(rootCmd *cobra.Command, options ...Option) tea.Model {
 
 	input := textinput.New()
 	input.Placeholder = "Enter your command here..."
-	input.TextStyle = cfg.Styles.Command
-	input.PromptStyle = cfg.Styles.CommandPrompt
-	input.PlaceholderStyle = cfg.Styles.Placeholder
-	input.Cursor.Style = cfg.Styles.Cursor
-	input.Focus()
+	inputStyles := textinput.DefaultDarkStyles()
+	inputStyles.Focused.Text = cfg.Styles.Command
+	inputStyles.Blurred.Text = cfg.Styles.Command
+	inputStyles.Focused.Prompt = cfg.Styles.CommandPrompt
+	inputStyles.Blurred.Prompt = cfg.Styles.CommandPrompt
+	inputStyles.Focused.Placeholder = cfg.Styles.Placeholder
+	inputStyles.Blurred.Placeholder = cfg.Styles.Placeholder
+	input.SetStyles(inputStyles)
+	_ = input.Focus()
 
 	searchInput := textinput.New()
 	searchInput.Prompt = "search: "
-	searchInput.TextStyle = cfg.Styles.Search
-	searchInput.PromptStyle = cfg.Styles.SearchPrompt
-	searchInput.PlaceholderStyle = cfg.Styles.Placeholder
+	searchStyles := textinput.DefaultDarkStyles()
+	searchStyles.Focused.Text = cfg.Styles.Search
+	searchStyles.Blurred.Text = cfg.Styles.Search
+	searchStyles.Focused.Prompt = cfg.Styles.SearchPrompt
+	searchStyles.Blurred.Prompt = cfg.Styles.SearchPrompt
+	searchStyles.Focused.Placeholder = cfg.Styles.Placeholder
+	searchStyles.Blurred.Placeholder = cfg.Styles.Placeholder
+	searchInput.SetStyles(searchStyles)
 
 	// Reroute cobra to output via our logs
 	cobrautils.InitRootCmd(rootCmd)
@@ -120,7 +129,7 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		m.height = msg.Height
 		m.width = msg.Width
 
-		m.input.Width = m.width
+		m.input.SetWidth(m.width)
 
 		m.history, cmd = m.history.Update(tea.WindowSizeMsg{
 			Width:  msg.Width,
@@ -163,7 +172,7 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		}
 		return m, nil
 
-	case tea.KeyMsg:
+	case tea.KeyPressMsg:
 		switch {
 		case key.Matches(msg, m.cfg.KeyMap.Quit):
 			return m, m.Shutdown
@@ -184,14 +193,14 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	return m, tea.Batch(cmds...)
 }
 
-func (m Model) View() string {
+func (m Model) View() tea.View {
 	if m.mode == nil {
 		// we've not finished init yet
-		return ""
+		return tea.NewView("")
 	}
 
 	if !m.init {
-		return lipgloss.NewStyle().Foreground(lipgloss.Color("205")).Render("Waiting for window size...")
+		return tea.NewView(lipgloss.NewStyle().Foreground(lipgloss.Color("205")).Render("Waiting for window size..."))
 	}
 
 	historyView := m.history.View()
@@ -228,7 +237,7 @@ func (m Model) View() string {
 			parts = append(parts, modeView)
 		}
 	}
-	return lipgloss.JoinVertical(lipgloss.Top, parts...)
+	return tea.NewView(lipgloss.JoinVertical(lipgloss.Top, parts...))
 }
 
 func (m Model) ExecuteCommand(cmd history.Item) tea.Cmd {

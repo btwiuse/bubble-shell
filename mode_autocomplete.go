@@ -4,8 +4,8 @@ import (
 	"strings"
 
 	"github.com/DomBlack/bubble-shell/pkg/tui/autocomplete"
-	"github.com/charmbracelet/bubbles/key"
-	tea "github.com/charmbracelet/bubbletea"
+	"charm.land/bubbles/v2/key"
+	tea "charm.land/bubbletea/v2"
 )
 
 type AutoCompleteMode struct{}
@@ -28,7 +28,7 @@ func (a *AutoCompleteMode) Update(m Model, msg tea.Msg) (Model, tea.Cmd) {
 			return a.AcceptOption(m)
 		}
 
-	case tea.KeyMsg:
+	case tea.KeyPressMsg:
 		switch {
 		case key.Matches(msg, m.cfg.KeyMap.AutoComplete):
 			return m, m.autocomplete.NextResult()
@@ -54,7 +54,7 @@ func (a *AutoCompleteMode) Update(m Model, msg tea.Msg) (Model, tea.Cmd) {
 		case key.Matches(msg, m.cfg.KeyMap.ExecuteCommand):
 			return a.AcceptOption(m)
 
-		case msg.Type == tea.KeySpace:
+		case msg.Code == tea.KeySpace:
 			return a.AcceptOption(m)
 
 		default:
