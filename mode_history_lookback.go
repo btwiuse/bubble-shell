@@ -2,8 +2,8 @@ package shell
 
 import (
 	"github.com/DomBlack/bubble-shell/pkg/tui/history"
-	"github.com/charmbracelet/bubbles/key"
-	tea "github.com/charmbracelet/bubbletea"
+	"charm.land/bubbles/v2/key"
+	tea "charm.land/bubbletea/v2"
 )
 
 type HistoryLookbackMode struct {
@@ -29,7 +29,7 @@ func (h *HistoryLookbackMode) Update(m Model, msg tea.Msg) (Model, tea.Cmd) {
 
 	switch msg := msg.(type) {
 
-	case tea.KeyMsg:
+	case tea.KeyPressMsg:
 		switch {
 		case key.Matches(msg, m.cfg.KeyMap.ExecuteCommand):
 			line := m.input.Value()
@@ -96,7 +96,7 @@ func (h *HistoryLookbackMode) Update(m Model, msg tea.Msg) (Model, tea.Cmd) {
 			return m, m.Enter(&CommandEntryMode{})
 
 		default:
-			if msg.Type == tea.KeyRight || msg.Type == tea.KeyTab {
+			if msg.Code == tea.KeyRight || msg.Code == tea.KeyTab {
 				return m, m.Enter(&CommandEntryMode{KeepInputContent: true})
 			} else {
 				return m, tea.Sequence(

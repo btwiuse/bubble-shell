@@ -1,8 +1,8 @@
 package shell
 
 import (
-	"github.com/charmbracelet/bubbles/key"
-	tea "github.com/charmbracelet/bubbletea"
+	"charm.land/bubbles/v2/key"
+	tea "charm.land/bubbletea/v2"
 )
 
 type CommandRunningMode struct{ KeepInputContent bool }
@@ -19,7 +19,7 @@ func (c *CommandRunningMode) Leave(m Model) (Model, tea.Cmd) {
 
 func (c *CommandRunningMode) Update(m Model, msg tea.Msg) (Model, tea.Cmd) {
 	switch msg := msg.(type) {
-	case tea.KeyMsg:
+	case tea.KeyPressMsg:
 		switch {
 		case key.Matches(msg, m.cfg.KeyMap.Cancel):
 			if m.currentCmdCancel != nil {

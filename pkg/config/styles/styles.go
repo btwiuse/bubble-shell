@@ -1,7 +1,7 @@
 package styles
 
 import (
-	. "github.com/charmbracelet/lipgloss"
+	. "charm.land/lipgloss/v2"
 )
 
 // Styles is the set of styles which will be used to render the shell.

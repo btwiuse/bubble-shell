@@ -11,8 +11,8 @@ import (
 
 	"github.com/DomBlack/bubble-shell/internal/cobrautils"
 	"github.com/DomBlack/bubble-shell/pkg/modelid"
-	tea "github.com/charmbracelet/bubbletea"
-	"github.com/charmbracelet/lipgloss"
+	tea "charm.land/bubbletea/v2"
+	"charm.land/lipgloss/v2"
 	"github.com/cockroachdb/errors"
 	"github.com/spf13/cobra"
 )

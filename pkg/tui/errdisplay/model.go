@@ -5,8 +5,8 @@ import (
 	"strings"
 
 	"github.com/DomBlack/bubble-shell/internal/config"
-	tea "github.com/charmbracelet/bubbletea"
-	"github.com/charmbracelet/lipgloss"
+	tea "charm.land/bubbletea/v2"
+	"charm.land/lipgloss/v2"
 	"github.com/cockroachdb/errors"
 )
 
@@ -73,7 +73,7 @@ func (m Model) Update(_ tea.Msg) (tea.Model, tea.Cmd) {
 	return m, nil
 }
 
-func (m Model) View() string {
+func (m Model) View() tea.View {
 	lines := []string{
 		m.cfg.Styles.ErrorTitle.Render("Error:") + " " + m.cfg.Styles.ErrorMessage.Render(m.err.Error()),
 	}
@@ -119,5 +119,5 @@ func (m Model) View() string {
 		}
 	}
 
-	return lipgloss.JoinVertical(lipgloss.Top, lines...)
+	return tea.NewView(lipgloss.JoinVertical(lipgloss.Top, lines...))
 }

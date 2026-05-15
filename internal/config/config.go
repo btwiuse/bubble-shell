@@ -53,7 +53,7 @@ func Default() *Config {
 			"testing",
 			"github.com/spf13/cobra",
 			"github.com/cockroachdb/errors",
-			"github.com/charmbracelet/bubbletea",
+			"charm.land/bubbletea/v2",
 			"github.com/DomBlack/bubble-shell",
 		},
 	}

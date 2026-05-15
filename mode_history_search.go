@@ -2,8 +2,8 @@ package shell
 
 import (
 	"github.com/DomBlack/bubble-shell/pkg/tui/history"
-	"github.com/charmbracelet/bubbles/key"
-	tea "github.com/charmbracelet/bubbletea"
+	"charm.land/bubbles/v2/key"
+	tea "charm.land/bubbletea/v2"
 )
 
 type HistorySearchMode struct{}
@@ -15,9 +15,9 @@ func (h *HistorySearchMode) Enter(m Model) (Model, tea.Cmd) {
 	m.searchInput.Prompt = m.searchInputPrompt(true)
 	m.searchInput.SetValue("")
 	m.searchInput.CursorEnd()
-	m.searchInput.Focus()
+	cmd := m.searchInput.Focus()
 
-	return m, nil
+	return m, cmd
 }
 
 func (h *HistorySearchMode) Leave(m Model) (Model, tea.Cmd) {
@@ -28,7 +28,7 @@ func (h *HistorySearchMode) Leave(m Model) (Model, tea.Cmd) {
 
 func (h *HistorySearchMode) Update(m Model, msg tea.Msg) (Model, tea.Cmd) {
 	switch msg := msg.(type) {
-	case tea.KeyMsg:
+	case tea.KeyPressMsg:
 		switch {
 		case key.Matches(msg, m.cfg.KeyMap.ExecuteCommand):
 			line := m.input.Value()
@@ -54,11 +54,11 @@ func (h *HistorySearchMode) Update(m Model, msg tea.Msg) (Model, tea.Cmd) {
 		case key.Matches(msg, m.cfg.KeyMap.Cancel):
 			return m, m.Enter(&CommandEntryMode{})
 
-		case msg.Type == tea.KeyLeft || msg.Type == tea.KeyRight || msg.Type == tea.KeyTab:
+		case msg.Code == tea.KeyLeft || msg.Code == tea.KeyRight || msg.Code == tea.KeyTab:
 			line := m.history.Lookback(m.lookBack).Line
 			m.input.SetValue(line)
 
-			if msg.Type == tea.KeyLeft {
+			if msg.Code == tea.KeyLeft {
 				return m, tea.Sequence(
 					m.Enter(&CommandEntryMode{KeepInputContent: true}),
 					func() tea.Msg { return msg },

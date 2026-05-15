@@ -8,9 +8,9 @@ import (
 	"strings"
 
 	shell "github.com/DomBlack/bubble-shell"
-	"github.com/charmbracelet/bubbles/help"
-	tea "github.com/charmbracelet/bubbletea"
-	"github.com/charmbracelet/lipgloss"
+	"charm.land/bubbles/v2/help"
+	tea "charm.land/bubbletea/v2"
+	"charm.land/lipgloss/v2"
 	"github.com/cockroachdb/errors"
 	"github.com/spf13/cobra"
 )
@@ -77,7 +77,6 @@ func main() {
 				shell.WithHistoryFile(".bubble-shell-help-example"),
 			),
 		),
-		tea.WithAltScreen(),
 	)
 	_, err := p.Run()
 	if err != nil {
@@ -131,13 +130,15 @@ func (m Model) Update(msg tea.Msg) (rtn tea.Model, cmd tea.Cmd) {
 	return m, cmd
 }
 
-func (m Model) View() string {
-	return lipgloss.JoinVertical(lipgloss.Top,
-		m.Shell.View(),
+func (m Model) View() tea.View {
+	v := tea.NewView(lipgloss.JoinVertical(lipgloss.Top,
+		m.Shell.View().Content,
 		m.helpStyle.Copy().Width(m.width).Render(
 			m.Help.View(
 				m.Shell.(help.KeyMap), // The shell implements the help.KeyMap interface
 			),
 		),
-	)
+	))
+	v.AltScreen = true
+	return v
 }

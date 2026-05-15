@@ -7,8 +7,8 @@ import (
 
 	"github.com/DomBlack/bubble-shell/internal/config"
 	"github.com/DomBlack/bubble-shell/pkg/tui/errdisplay"
-	tea "github.com/charmbracelet/bubbletea"
-	"github.com/charmbracelet/lipgloss"
+	tea "charm.land/bubbletea/v2"
+	"charm.land/lipgloss/v2"
 	"github.com/rs/xid"
 )
 
@@ -142,7 +142,7 @@ func (i Item) View(cfg *config.Config, width int) string {
 
 	// Render the error if we have any
 	if i.Error != nil {
-		errView := lipgloss.NewStyle().Width(width).Render(errdisplay.New(cfg, i.Error).View())
+		errView := lipgloss.NewStyle().Width(width).Render(errdisplay.New(cfg, i.Error).View().Content)
 		if errView != "" {
 			lines = append(lines, errView)
 		}

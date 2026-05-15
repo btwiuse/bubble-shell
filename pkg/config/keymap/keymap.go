@@ -1,7 +1,7 @@
 package keymap
 
 import (
-	"github.com/charmbracelet/bubbles/key"
+	"charm.land/bubbles/v2/key"
 )
 
 // KeyMap is a collection of all the key bindings used by the shell
